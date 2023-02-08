@@ -1,7 +1,6 @@
 package bushuev;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 
 public class MyMap<K, V> {
 
@@ -16,10 +15,12 @@ public class MyMap<K, V> {
     }
 
     private ArrayList<LinkedList<Pair>> arr;
+    int capSize;
 
     public MyMap(int capacity) {
         /* Создание списка связных списков . Список заполняется значениями
          * пull (единственный способ создания массива заданного размера ). */
+        capSize=capacity;
         arr = new ArrayList<LinkedList<Pair>>();
         arr.ensureCapacity(capacity);
         for (int i = 0; i < capacity; i++) {
@@ -27,7 +28,7 @@ public class MyMap<K, V> {
         }
     }
 
-    public boolean contains(Pair pair){
+    private boolean containsPair(Pair pair){
         int index = getIndexForKey((K) pair.key);
         LinkedList<Pair> current = arr.get(index);
         return arr.contains(pair);
@@ -65,14 +66,42 @@ public class MyMap<K, V> {
         return null;
     }
 
+    public int size() {
+        return arr.size();
+    }
+
+    public boolean isEmpty() {
+        for (int i = 0;i< arr.size();i++) {
+            if (arr.get(i) == null) return false;
+        }
+        return true;
+    }
+
+    public boolean containsKey(K key) {
+        return arr.get(getIndexForKey(key)) != null;
+    }
+
+    public boolean containsValue(Object value) {
+
+        return false;
+    }
+
+    public Object get(K key) {
+        return arr.get(getIndexForKey(key));
+    }
+
+    public void clear() {
+        for (int i =0;i<arr.size();i++){
+            if (arr.get(i)!= null) arr.set(i,null);
+        }
+    }
+
     public LinkedList getList(K key) {
         if (key == null) return null;
         int index = getIndexForKey(key);
         return arr.get(index)==null? null:arr.get(index);
     }
 
-
-    /* Очень наивная функция для связывания ключа с индексом . */
     private int getIndexForKey(K key) {
         return Math.abs(key.hashCode() % arr.size());
     }
