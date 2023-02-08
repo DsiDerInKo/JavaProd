@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MyMap<K, V> {
-    /* Класс узла связного списка . Используется только в хэш-таблице,
-     * реализуется в виде двусвязного списка . */
 
     class Pair<K,V>{
         K key;
@@ -42,24 +40,31 @@ public class MyMap<K, V> {
         Pair tmp = new Pair(key,value);
 
         if (arr.get(index) == null) {
-            //arr.get(index) = new LinkedList<>();
+            arr.set(index,new LinkedList<>());
         }
 
         arr.get(index).add(tmp);
 
-        //arr.set(index, node);
         return true;
     }
 
     /* Удаление узла для ключа . */
-    public V remove(K key) {
-        int index = getIndexForKey(key);
+    public V remove(K key) throws IllegalAccessException {
 
+        LinkedList<Pair> list = getList(key);
+        if(list == null) throw new IllegalAccessException();
+
+        for (Pair pair : list) {
+            if(pair.key == key){
+                V tmp = (V) pair.value;
+                list.remove(pair);
+                return tmp;
+            }
+        }
 
         return null;
     }
 
-    /* Получение значения для ключа . */
     public LinkedList getList(K key) {
         if (key == null) return null;
         int index = getIndexForKey(key);
@@ -68,15 +73,21 @@ public class MyMap<K, V> {
 
 
     /* Очень наивная функция для связывания ключа с индексом . */
-    public int getIndexForKey(K key) {
+    private int getIndexForKey(K key) {
         return Math.abs(key.hashCode() % arr.size());
     }
 
     public void printTable() {
         for (int i = 0; i < arr.size(); i++) {
             //String s = arr.get(i) == null ? "" : arr.get(i).printForward();
-            String s = arr.toString();
-            System.out.println(i + ": " + s);
+            if (arr.get(i) == null) continue;
+            for(int j=0; j < arr.get(i).size();j++){
+                String s = arr.get(i).get(j) == null? "empty": arr.get(i).get(j).key.toString();
+                String t = arr.get(i).get(j).value.toString();
+                System.out.println(i + ": " + "key,value:"+s+","+t);
+            }
+
+
 
         }
     }
