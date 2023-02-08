@@ -4,10 +4,11 @@ import bushuev.HashFunctions;
 import death.Heap;
 import bushuev.HashTable;
 import bushuev.Hasher;
+import bushuev.MyMap;
 
 public class MainClass {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
 
         HashTable table = new HashTable(20);
 
@@ -33,6 +34,19 @@ public class MainClass {
         tbl.put(100,"123212");
         tbl.put(100,"123211");
 
+        MyMap<Integer,String> good = new MyMap<>(20);
+
+        good.put(12,"123a");
+        good.put(13,"12364");
+        good.put(1,"123342");
+        good.put(15,"123645");
+        good.put(100,"123213");
+        good.put(100,"123212");
+        good.put(100,"123211");
+
+        good.remove(100);
+
+        good.printTable();
     }
 
 }

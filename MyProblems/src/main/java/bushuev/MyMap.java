@@ -1,11 +1,8 @@
 package bushuev;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 
 public class MyMap<K, V> {
-    /* Класс узла связного списка . Используется только в хэш-таблице,
-     * реализуется в виде двусвязного списка . */
 
     class Pair<K,V>{
         K key;
@@ -18,10 +15,12 @@ public class MyMap<K, V> {
     }
 
     private ArrayList<LinkedList<Pair>> arr;
+    int capSize;
 
     public MyMap(int capacity) {
         /* Создание списка связных списков . Список заполняется значениями
          * пull (единственный способ создания массива заданного размера ). */
+        capSize=capacity;
         arr = new ArrayList<LinkedList<Pair>>();
         arr.ensureCapacity(capacity);
         for (int i = 0; i < capacity; i++) {
@@ -29,7 +28,7 @@ public class MyMap<K, V> {
         }
     }
 
-    public boolean contains(Pair pair){
+    private boolean containsPair(Pair pair){
         int index = getIndexForKey((K) pair.key);
         LinkedList<Pair> current = arr.get(index);
         return arr.contains(pair);
@@ -42,42 +41,80 @@ public class MyMap<K, V> {
         Pair tmp = new Pair(key,value);
 
         if (arr.get(index) == null) {
-            //arr.get(index) = new LinkedList<>();
+            arr.set(index,new LinkedList<>());
         }
 
         arr.get(index).add(tmp);
 
-        //arr.set(index, node);
         return true;
     }
 
     /* Удаление узла для ключа . */
-    public V remove(K key) {
-        int index = getIndexForKey(key);
+    public V remove(K key) throws IllegalAccessException {
 
+        LinkedList<Pair> list = getList(key);
+        if(list == null) throw new IllegalAccessException();
+
+        for (Pair pair : list) {
+            if(pair.key == key){
+                V tmp = (V) pair.value;
+                list.remove(pair);
+                return tmp;
+            }
+        }
 
         return null;
     }
 
-    /* Получение значения для ключа . */
+    public int size() {
+        return arr.size();
+    }
+
+    public boolean isEmpty() {
+        for (int i = 0;i< arr.size();i++) {
+            if (arr.get(i) == null) return false;
+        }
+        return true;
+    }
+
+    public boolean containsKey(K key) {
+        return arr.get(getIndexForKey(key)) != null;
+    }
+
+    public boolean containsValue(Object value) {
+
+        return false;
+    }
+
+    public Object get(K key) {
+        return arr.get(getIndexForKey(key));
+    }
+
+    public void clear() {
+        for (int i =0;i<arr.size();i++){
+            if (arr.get(i)!= null) arr.set(i,null);
+        }
+    }
+
     public LinkedList getList(K key) {
         if (key == null) return null;
         int index = getIndexForKey(key);
         return arr.get(index)==null? null:arr.get(index);
     }
 
-
-    /* Очень наивная функция для связывания ключа с индексом . */
-    public int getIndexForKey(K key) {
+    private int getIndexForKey(K key) {
         return Math.abs(key.hashCode() % arr.size());
     }
 
     public void printTable() {
         for (int i = 0; i < arr.size(); i++) {
             //String s = arr.get(i) == null ? "" : arr.get(i).printForward();
-            String s = arr.toString();
-            System.out.println(i + ": " + s);
-
+            if (arr.get(i) == null) continue;
+            for(int j=0; j < arr.get(i).size();j++){
+                String s = arr.get(i).get(j) == null? "empty": arr.get(i).get(j).key.toString();
+                String t = arr.get(i).get(j).value.toString();
+                System.out.println(i + ": " + "key,value:"+s+","+t);
+            }
         }
     }
 }
