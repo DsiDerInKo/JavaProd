@@ -115,9 +115,6 @@ public class MyMap<K, V> {
                 String t = arr.get(i).get(j).value.toString();
                 System.out.println(i + ": " + "key,value:"+s+","+t);
             }
-
-
-
         }
     }
 }
