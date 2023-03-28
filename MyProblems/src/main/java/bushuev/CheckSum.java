@@ -21,9 +21,11 @@ class CheckSum implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception { // your business logic goes here...
+        
         byte[] fileContents = Files.readAllBytes(file.toPath());
         byte[] digest = MessageDigest.getInstance(algorithm).digest(fileContents);
         System.out.printf("%0" + (digest.length * 2) + "x%n", new BigInteger(1, digest));
+
         return 0;
     }
 
